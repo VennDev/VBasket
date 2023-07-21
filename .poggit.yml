@@ -1,0 +1,12 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/VennDev/VBasket
+build-by-default: true
+branches:
+- main
+projects:
+  VBasket:
+    path: ""
+    libs:
+      - src: VennDev/LibVapmPMMP/LibVapmPMMP
+        version: ^1.7
+        branch: "main"
+...
