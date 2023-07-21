@@ -90,8 +90,6 @@ final class VBasket extends PluginBase implements Listener
 			PumpkinSeeds::class => VanillaBlocks::PUMPKIN_STEM(),
 			MelonSeeds::class => VanillaBlocks::MELON_STEM(),
 			BeetrootSeeds::class => VanillaBlocks::BEETROOTS(),
-
-			// My hope is that this will work, but I'm not sure. :))
 			ItemUtil::getItem("nether_wart")::class => VanillaBlocks::NETHER_WART()
 		];
 
