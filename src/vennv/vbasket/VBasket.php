@@ -29,7 +29,6 @@ use pocketmine\command\CommandSender;
 use pocketmine\item\BeetrootSeeds;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
-use pocketmine\item\Beetroot;
 use pocketmine\item\Carrot;
 use pocketmine\item\MelonSeeds;
 use pocketmine\item\Potato;
@@ -72,7 +71,7 @@ final class VBasket extends PluginBase implements Listener
 			Potato::class,
 			PumpkinSeeds::class,
 			MelonSeeds::class,
-			Beetroot::class
+			BeetrootSeeds::class
 		];
 
 		$this->getLogger()->info("Has been loaded " . count(Seeds::$seeds_item) . " seeds.");
