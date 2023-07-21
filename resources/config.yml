@@ -1,0 +1,19 @@
+---
+
+# Name of each the basket
+seeds: "§aBaskets of Seeds"
+nether_wart: "§dBaskets of Nether Wart"
+
+# Lore of the basket
+lore:
+  - "§bJump to open"
+  - "§eRight click to plant"
+
+# Length of the basket can plant
+length: 50
+
+# Messages
+dont_have_seeds: "§cYou don't have any seeds!"
+not_the_place: "§cThis is not the place to grow this variety!"
+
+...
