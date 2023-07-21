@@ -28,7 +28,6 @@ use pocketmine\block\Air;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\utils\TextFormat;
 use vennv\vbasket\data\DataManager;
 use vennv\vbasket\event\VBasketPlantEvent;
 use vennv\vbasket\utils\ItemUtil;
