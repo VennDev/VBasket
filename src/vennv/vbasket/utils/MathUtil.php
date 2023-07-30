@@ -18,35 +18,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket\utils;
 
 use pocketmine\entity\Location;
 use pocketmine\math\Vector3;
 
-final class MathUtil
-{
+final class MathUtil {
 
-	public static function getNextBlockByInteract(Location $location, Vector3 $blockVector, int $distance = 0): Vector3
-	{
-		$distance += 2;
+    public static function getNextBlockByInteract(Location $location, Vector3 $blockVector, int $distance = 0) : Vector3 {
+        $distance += 2;
 
-		$xFrom = $location->getX();
-		$zFrom = $location->getZ();
-		$yawFrom = $location->getYaw();
-		$pitchFrom = $location->getPitch();
+        $xFrom = $location->getX();
+        $zFrom = $location->getZ();
+        $yawFrom = $location->getYaw();
+        $pitchFrom = $location->getPitch();
 
-		$yawRad = deg2rad($yawFrom);
-		$pitchRad = deg2rad($pitchFrom);
+        $yawRad = deg2rad($yawFrom);
+        $pitchRad = deg2rad($pitchFrom);
 
-		$directionX = -sin($yawRad) * cos($pitchRad);
-		$directionZ = cos($yawRad) * cos($pitchRad);
+        $directionX = -sin($yawRad) * cos($pitchRad);
+        $directionZ = cos($yawRad) * cos($pitchRad);
 
-		$nextBlockX = $xFrom + $distance * $directionX;
-		$nextBlockZ = $zFrom + $distance * $directionZ;
+        $nextBlockX = $xFrom + $distance * $directionX;
+        $nextBlockZ = $zFrom + $distance * $directionZ;
 
-		return new Vector3($nextBlockX, $blockVector->getY(), $nextBlockZ);
-	}
+        return new Vector3($nextBlockX, $blockVector->getY(), $nextBlockZ);
+    }
 
 }

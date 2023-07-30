@@ -20,14 +20,12 @@
 
 namespace vennv\vbasket\utils;
 
-final class Balance
-{
+final class Balance {
 
-	public function __construct(
-		public bool $should,
-		public int|float $add,
-		public int|float $quantity
-	)
-	{}
+    public function __construct(
+        public bool      $should,
+        public int|float $add,
+        public int|float $quantity
+    ) {}
 
 }

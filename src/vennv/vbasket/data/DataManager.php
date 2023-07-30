@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket\data;
 
@@ -32,157 +32,130 @@ use vennv\vbasket\utils\ItemUtil;
 use vennv\vbasket\utils\TypeVBasket;
 use vennv\vbasket\VBasket;
 
-final class DataManager
-{
+final class DataManager {
 
-	private static array $data = [];
+    private static array $data = [];
 
-	public static function setData(Player $player, $value): void
-	{
-		self::$data[$player->getXuid()] = $value;
-	}
+    public static function setData(Player $player, $value) : void {
+        self::$data[$player->getXuid()] = $value;
+    }
 
-	public static function getData(Player $player): ?DataVBasket
-	{
-		return self::$data[$player->getXuid()] ?? null;
-	}
+    public static function getData(Player $player) : ?DataVBasket {
+        return self::$data[$player->getXuid()] ?? null;
+    }
 
-	public static function getBalancing(int|float $add, int|float $value, int|float $size): Balance
-	{
-		$should = true;
-		$quantity = 0;
-		$add = $value + $add;
+    public static function getBalancing(int|float $add, int|float $value, int|float $size) : Balance {
+        $should = true;
+        $quantity = 0;
+        $add = $value + $add;
 
-		if ($value === $size)
-		{
-			$should = false;
-		}
+        if ($value === $size) {
+            $should = false;
+        }
 
-		if ($add > $size)
-		{
-			$add += $size - $add;
-			$quantity = abs($size - $add);
-		}
+        if ($add > $size) {
+            $add += $size - $add;
+            $quantity = abs($size - $add);
+        }
 
-		return new Balance($should, $add, $quantity);
-	}
+        return new Balance($should, $add, $quantity);
+    }
 
-	public static function giveVBasket(Player $player, string $type, int $amount): void
-	{
-		for ($i = 0; $i < $amount; $i++)
-		{
-			$item = self::getVBasket($player, $type);
+    public static function giveVBasket(Player $player, string $type, int $amount) : void {
+        for ($i = 0; $i < $amount; $i++) {
+            $item = self::getVBasket($player, $type);
 
-			if ($item !== null)
-			{
-				$player->getInventory()->addItem($item);
-			}
-		}
-	}
+            if ($item !== null) {
+                $player->getInventory()->addItem($item);
+            }
+        }
+    }
 
-	public static function getVBasket(Player $player, string $type): ?Item
-	{
-		$item = ItemUtil::getItem("barrel");
-		$item = match ($type)
-		{
-			TypeVBasket::SEEDS => $item->setCustomName(self::getConfig()->get("seeds")),
-			TypeVBasket::NETHER_WART => $item->setCustomName(self::getConfig()->get("nether_wart")),
-			default => null
-		};
+    public static function getVBasket(Player $player, string $type) : ?Item {
+        $item = ItemUtil::getItem("barrel");
+        $item = match ($type) {
+            TypeVBasket::SEEDS => $item->setCustomName(self::getConfig()->get("seeds")),
+            TypeVBasket::NETHER_WART => $item->setCustomName(self::getConfig()->get("nether_wart")),
+            default => null
+        };
 
-		if ($item !== null)
-		{
-			$timeString = microtime(true) . $player->getName() . rand(1, 1000);
+        if ($item !== null) {
+            $timeString = microtime(true) . $player->getName() . rand(1, 1000);
 
-			$item->setLore(self::getConfig()->get("lore"));
-			$item->getNamedTag()->setString("items_vbasket", (new DataVBasket($player))->encode());
-			$item->getNamedTag()->setString("type_vbasket", $type);
-			$item->getNamedTag()->setString("vbasket", "vbasket");
-			$item->getNamedTag()->setString("time_give_vbasket", $timeString);
-		}
+            $item->setLore(self::getConfig()->get("lore"));
+            $item->getNamedTag()->setString("items_vbasket", (new DataVBasket($player))->encode());
+            $item->getNamedTag()->setString("type_vbasket", $type);
+            $item->getNamedTag()->setString("vbasket", "vbasket");
+            $item->getNamedTag()->setString("time_give_vbasket", $timeString);
+        }
 
-		return $item;
-	}
+        return $item;
+    }
 
-	public static function removeData(Player $player): void
-	{
-		$data = self::getData($player);
+    public static function removeData(Player $player) : void {
+        $data = self::getData($player);
 
-		if ($data !== null)
-		{
-			$item = $data->getItemInHand();
+        if ($data !== null) {
+            $item = $data->getItemInHand();
 
-			try
-			{
-				$player->getInventory()->removeItem($item);
-				$item->getNamedTag()->setString("items_vbasket", $data->encodeItems());
-				$player->selectHotbarSlot(0);
-				$player->getInventory()->addItem($item);
-			}
-			catch (Exception $error)
-			{
-				$player->sendMessage(
-					TextFormat::RED . "An error occurred while saving your basket. Error: " . $error->getMessage()
-				);
-			}
-		}
+            try {
+                $player->getInventory()->removeItem($item);
+                $item->getNamedTag()->setString("items_vbasket", $data->encodeItems());
+                $player->selectHotbarSlot(0);
+                $player->getInventory()->addItem($item);
+            } catch (Exception $error) {
+                $player->sendMessage(
+                    TextFormat::RED . "An error occurred while saving your basket. Error: " . $error->getMessage()
+                );
+            }
+        }
 
-		unset(self::$data[$player->getXuid()]);
-	}
+        unset(self::$data[$player->getXuid()]);
+    }
 
-	public static function getConfig() : Config
-	{
-		return VBasket::getInstance()->getConfig();
-	}
+    public static function getConfig() : Config {
+        return VBasket::getInstance()->getConfig();
+    }
 
-	public static function getContentsVBasket(Player $player, Item $item): array
-	{
-		$data = $item->getNamedTag()->getString("items_vbasket");
+    public static function getContentsVBasket(Player $player, Item $item) : array {
+        $data = $item->getNamedTag()->getString("items_vbasket");
 
-		return (new DataVBasket($player))->decodeItems($data);
-	}
+        return (new DataVBasket($player))->decodeItems($data);
+    }
 
-	public static function getTypeVBasket(Item $item): string
-	{
-		return $item->getNamedTag()->getString("type_vbasket");
-	}
+    public static function getTypeVBasket(Item $item) : string {
+        return $item->getNamedTag()->getString("type_vbasket");
+    }
 
-	public static function isVBasket(Item $item): bool
-	{
-		try
-		{
-			return $item->getNamedTag()->getString("vbasket") === "vbasket";
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-	}
+    public static function isVBasket(Item $item) : bool {
+        try {
+            return $item->getNamedTag()->getString("vbasket") === "vbasket";
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 
-	public static function getItemsVBasket(Item $item): string
-	{
-		return $item->getNamedTag()->getString("items_vbasket");
-	}
+    public static function getItemsVBasket(Item $item) : string {
+        return $item->getNamedTag()->getString("items_vbasket");
+    }
 
-	public static function generatorIdVBasket(Player $player): string
-	{
-		return $player->getXuid() . "-" . microtime(true);
-	}
+    public static function generatorIdVBasket(Player $player) : string {
+        return $player->getXuid() . "-" . microtime(true);
+    }
 
-	public static function openVBasket(Player $player, Item $backpack): void
-	{
-		$type = self::getTypeVBasket($backpack);
-		$items = self::getContentsVBasket($player, $backpack);
+    public static function openVBasket(Player $player, Item $backpack) : void {
+        $type = self::getTypeVBasket($backpack);
+        $items = self::getContentsVBasket($player, $backpack);
 
-		$data = new DataVBasket($player);
-		$data->setWindowCurrent([
-			"type" => $type,
-			"items" => $items,
-			"item_in_hand" => $backpack,
-		]);
+        $data = new DataVBasket($player);
+        $data->setWindowCurrent([
+            "type" => $type,
+            "items" => $items,
+            "item_in_hand" => $backpack,
+        ]);
 
-		self::setData($player, $data);
-		self::getData($player)->getVBasket();
-	}
+        self::setData($player, $data);
+        self::getData($player)->getVBasket();
+    }
 
 }

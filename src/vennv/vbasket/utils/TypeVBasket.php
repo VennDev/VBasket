@@ -18,15 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket\utils;
 
-final class TypeVBasket
-{
+final class TypeVBasket {
 
-	public const SEEDS = "seeds";
+    public const SEEDS = "seeds";
 
-	public const NETHER_WART = "nether_wart";
+    public const NETHER_WART = "nether_wart";
 
 }

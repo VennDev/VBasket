@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket\data;
 
@@ -33,124 +33,102 @@ use pocketmine\player\Player;
 use vennv\vbasket\utils\ItemUtil;
 use vennv\vbasket\utils\TypeVBasket;
 
-final class DataVBasket
-{
+final class DataVBasket {
 
-	private Player $owner;
-	private array $windowCurrent = [];
+    private Player $owner;
+    private array $windowCurrent = [];
 
-	public function __construct(Player $owner)
-	{
-		$this->owner = $owner;
-	}
+    public function __construct(Player $owner) {
+        $this->owner = $owner;
+    }
 
-	public function getOwner(): Player
-	{
-		return $this->owner;
-	}
+    public function getOwner() : Player {
+        return $this->owner;
+    }
 
-	public function setWindowCurrent(array $window): void
-	{
-		$this->windowCurrent = $window;
-	}
+    public function setWindowCurrent(array $window) : void {
+        $this->windowCurrent = $window;
+    }
 
-	public function getWindowCurrent(): array
-	{
-		return $this->windowCurrent;
-	}
+    public function getWindowCurrent() : array {
+        return $this->windowCurrent;
+    }
 
-	public function getTypeCurrent(): string
-	{
-		return $this->windowCurrent["type"];
-	}
+    public function getTypeCurrent() : string {
+        return $this->windowCurrent["type"];
+    }
 
-	public function getItemInHand(): ?Item
-	{
-		return $this->windowCurrent["item_in_hand"] ?? null;
-	}
+    public function getItemInHand() : ?Item {
+        return $this->windowCurrent["item_in_hand"] ?? null;
+    }
 
-	public function encode(): string
-	{
-		return base64_encode(gzcompress(json_encode($this->windowCurrent)));
-	}
+    public function encode() : string {
+        return base64_encode(gzcompress(json_encode($this->windowCurrent)));
+    }
 
-	public function decode(string $data): array
-	{
-		return json_decode(gzuncompress(base64_decode($data)), true);
-	}
+    public function decode(string $data) : array {
+        return json_decode(gzuncompress(base64_decode($data)), true);
+    }
 
-	public function encodeItems(): string
-	{
-		return base64_encode(gzcompress(json_encode($this->windowCurrent["items"])));
-	}
+    public function encodeItems() : string {
+        return base64_encode(gzcompress(json_encode($this->windowCurrent["items"])));
+    }
 
-	public function decodeItems(string $items): array
-	{
-		return json_decode(gzuncompress(base64_decode($items)), true);
-	}
+    public function decodeItems(string $items) : array {
+        return json_decode(gzuncompress(base64_decode($items)), true);
+    }
 
-	/**
-	 * @throws Throwable
-	 */
-	public function saveItemsCurrent(array $contents): void
-	{
-		$this->windowCurrent["items"] = [];
+    /**
+     * @throws Throwable
+     */
+    public function saveItemsCurrent(array $contents) : void {
+        $this->windowCurrent["items"] = [];
 
-		foreach ($contents as $item)
-		{
-			$this->windowCurrent["items"][] = [$item->getCount(), ItemUtil::encodeItem($item)];
-		}
-	}
+        foreach ($contents as $item) {
+            $this->windowCurrent["items"][] = [$item->getCount(), ItemUtil::encodeItem($item)];
+        }
+    }
 
-	public function getVBasket(): void
-	{
-		$name = "";
+    public function getVBasket() : void {
+        $name = "";
 
-		$type = match ($this->getTypeCurrent())
-		{
-			TypeVBasket::SEEDS => $name = DataManager::getConfig()->get("seeds"),
-			TypeVBasket::NETHER_WART => $name = DataManager::getConfig()->get("nether_wart"),
-			default => null
-		};
+        $type = match ($this->getTypeCurrent()) {
+            TypeVBasket::SEEDS => $name = DataManager::getConfig()->get("seeds"),
+            TypeVBasket::NETHER_WART => $name = DataManager::getConfig()->get("nether_wart"),
+            default => null
+        };
 
-		if ($type !== null)
-		{
-			$menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
-			$menu->setName($name);
+        if ($type !== null) {
+            $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
+            $menu->setName($name);
 
-			$inventory = $menu->getInventory();
+            $inventory = $menu->getInventory();
 
-			if (count($this->windowCurrent["items"]) > 0)
-			{
-				foreach ($this->windowCurrent["items"] as [$count, $item])
-				{
-					if (is_string($item))
-					{
-						$inventory->addItem(ItemUtil::decodeItem($item)->setCount($count));
-					}
-				}
-			}
+            if (count($this->windowCurrent["items"]) > 0) {
+                foreach ($this->windowCurrent["items"] as [$count, $item]) {
+                    if (is_string($item)) {
+                        $inventory->addItem(ItemUtil::decodeItem($item)->setCount($count));
+                    }
+                }
+            }
 
-			$menu->setListener(function(InvMenuTransaction $transaction): InvMenuTransactionResult
-			{
-				$in = $transaction->getIn();
+            $menu->setListener(function (InvMenuTransaction $transaction) : InvMenuTransactionResult {
+                $in = $transaction->getIn();
 
-				if (DataManager::isVBasket($in))
-				{
-					return $transaction->discard();
-				}
+                if (DataManager::isVBasket($in)) {
+                    return $transaction->discard();
+                }
 
-				return $transaction->continue();
-			});
+                return $transaction->continue();
+            });
 
-			$menu->setInventoryCloseListener(function(Player $player, Inventory $inventory)
-			{
-				$this->saveItemsCurrent($inventory->getContents());
-				DataManager::removeData($this->owner);
-			});
+            $menu->setInventoryCloseListener(function (Player $player, Inventory $inventory) {
+                $this->saveItemsCurrent($inventory->getContents());
+                DataManager::removeData($this->owner);
+            });
 
-			$menu->send($this->owner);
-		}
-	}
+            $menu->send($this->owner);
+        }
+    }
 
 }

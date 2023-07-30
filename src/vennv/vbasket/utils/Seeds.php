@@ -18,72 +18,59 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket\utils;
 
 use pocketmine\block\Block;
 use pocketmine\item\Item;
 
-final class Seeds
-{
+final class Seeds {
 
-	public static array $seeds_item = [];
+    public static array $seeds_item = [];
 
-	public static array $nether_wart_item = [];
+    public static array $nether_wart_item = [];
 
-	public static array $blockSeeds = [];
+    public static array $blockSeeds = [];
 
-	public static function isSeedsItem(Item $item): bool
-	{
-		foreach (self::$seeds_item as $seeds)
-		{
-			if ($item instanceof $seeds)
-			{
-				return true;
-			}
-		}
+    public static function isSeedsItem(Item $item) : bool {
+        foreach (self::$seeds_item as $seeds) {
+            if ($item instanceof $seeds) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static function isNetherWartItem(Item $item): bool
-	{
-		foreach (self::$nether_wart_item as $nether_wart)
-		{
-			if ($item->getTypeId() === $nether_wart->getTypeId())
-			{
-				return true;
-			}
-		}
+    public static function isNetherWartItem(Item $item) : bool {
+        foreach (self::$nether_wart_item as $nether_wart) {
+            if ($item->getTypeId() === $nether_wart->getTypeId()) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static function isBlockSeeds(Item $item): bool
-	{
-		foreach (self::$blockSeeds as $blockSeeds)
-		{
-			if ($item->getTypeId() === $blockSeeds->getTypeId())
-			{
-				return true;
-			}
-		}
+    public static function isBlockSeeds(Item $item) : bool {
+        foreach (self::$blockSeeds as $blockSeeds) {
+            if ($item->getTypeId() === $blockSeeds->getTypeId()) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static function getBlockSeeds(Item $item): ?Block
-	{
-		foreach (self::$blockSeeds as $itemSeed => $blockSeed)
-		{
-			if ($item instanceof $itemSeed)
-			{
-				return $blockSeed;
-			}
-		}
+    public static function getBlockSeeds(Item $item) : ?Block {
+        foreach (self::$blockSeeds as $itemSeed => $blockSeed) {
+            if ($item instanceof $itemSeed) {
+                return $blockSeed;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 }

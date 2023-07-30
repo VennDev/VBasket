@@ -38,118 +38,103 @@ use vennv\vapm\Promise;
 use vennv\vbasket\utils\MathUtil;
 use vennv\vbasket\utils\Seeds;
 
-class VBasketPlantEvent extends Event implements Cancellable
-{
-	use CancellableTrait;
+class VBasketPlantEvent extends Event implements Cancellable {
 
-	private Player $player;
+    use CancellableTrait;
 
-	private World $world;
+    private Player $player;
 
-	private Location $location;
+    private World $world;
 
-	private Position $positionBlock;
+    private Location $location;
 
-	private array $itemsToPlant;
+    private Position $positionBlock;
 
-	/**
-	 * @param Player $player
-	 * @param World $world
-	 * @param Location $location
-	 * @param Position $positionBlock
-	 * @param array<int, Item> $itemsToPlant
-	 * @throws Throwable
-	 */
-	public function __construct(
-		Player $player,
-		World $world,
-		Location $location,
-		Position $positionBlock,
-		array $itemsToPlant
-	)
-	{
-		$this->player = $player;
-		$this->world = $world;
-		$this->location = $location;
-		$this->positionBlock = $positionBlock;
-		$this->itemsToPlant = $itemsToPlant;
+    private array $itemsToPlant;
 
-		$this->doJob();
-	}
+    /**
+     * @param Player $player
+     * @param World $world
+     * @param Location $location
+     * @param Position $positionBlock
+     * @param array<int, Item> $itemsToPlant
+     * @throws Throwable
+     */
+    public function __construct(
+        Player   $player,
+        World    $world,
+        Location $location,
+        Position $positionBlock,
+        array    $itemsToPlant
+    ) {
+        $this->player = $player;
+        $this->world = $world;
+        $this->location = $location;
+        $this->positionBlock = $positionBlock;
+        $this->itemsToPlant = $itemsToPlant;
 
-	public function getPlayer(): Player
-	{
-		return $this->player;
-	}
+        $this->doJob();
+    }
 
-	public function getWorld(): World
-	{
-		return $this->world;
-	}
+    public function getPlayer() : Player {
+        return $this->player;
+    }
 
-	public function getLocation(): Location
-	{
-		return $this->location;
-	}
+    public function getWorld() : World {
+        return $this->world;
+    }
 
-	public function getPositionBlock(): Position
-	{
-		return $this->positionBlock;
-	}
+    public function getLocation() : Location {
+        return $this->location;
+    }
 
-	public function getItemsToPlant(): array
-	{
-		return $this->itemsToPlant;
-	}
+    public function getPositionBlock() : Position {
+        return $this->positionBlock;
+    }
 
-	/**
-	 * @throws Throwable
-	 */
-	private function doJob(): void
-	{
-		new Async(function()
-		{
-			$nextNumber = 1;
+    public function getItemsToPlant() : array {
+        return $this->itemsToPlant;
+    }
 
-			foreach ($this->itemsToPlant as $item)
-			{
-				for ($i = 0; $i < $item->getCount(); $i++)
-				{
-					Async::await(new Promise(function($resolve) use ($item, &$nextNumber)
-					{
-						$nextVector = MathUtil::getNextBlockByInteract($this->location, $this->positionBlock->asVector3(), $nextNumber);
+    /**
+     * @throws Throwable
+     */
+    private function doJob() : void {
+        new Async(function () {
+            $nextNumber = 1;
 
-						$blockHere = $this->world->getBlock($nextVector);
-						$blockDownHere = $this->world->getBlock($nextVector->subtract(0, 1, 0));
+            foreach ($this->itemsToPlant as $item) {
+                for ($i = 0; $i < $item->getCount(); $i++) {
+                    Async::await(new Promise(function ($resolve) use ($item, &$nextNumber) {
+                        $nextVector = MathUtil::getNextBlockByInteract($this->location, $this->positionBlock->asVector3(), $nextNumber);
 
-						$blockSeed = Seeds::getBlockSeeds($item);
+                        $blockHere = $this->world->getBlock($nextVector);
+                        $blockDownHere = $this->world->getBlock($nextVector->subtract(0, 1, 0));
 
-						if ($blockSeed instanceof NetherWartPlant)
-						{
-							$blockDown = VanillaBlocks::SOUL_SAND();
-						}
-						else
-						{
-							$blockDown = VanillaBlocks::FARMLAND();
-						}
+                        $blockSeed = Seeds::getBlockSeeds($item);
 
-						if ($blockHere instanceof Air && $blockDownHere instanceof $blockDown)
-						{
-							$this->world->setBlock(
-								$nextVector,
-								$blockSeed
-							);
+                        if ($blockSeed instanceof NetherWartPlant) {
+                            $blockDown = VanillaBlocks::SOUL_SAND();
+                        } else {
+                            $blockDown = VanillaBlocks::FARMLAND();
+                        }
 
-							$viewers = $this->world->getViewersForPosition($nextVector);
-							$this->world->addSound($nextVector, new BlockBreakSound(VanillaBlocks::COCOA_POD()), $viewers);
-						}
+                        if ($blockHere instanceof Air && $blockDownHere instanceof $blockDown) {
+                            $this->world->setBlock(
+                                $nextVector,
+                                $blockSeed
+                            );
 
-						$resolve(true);
-						$nextNumber++;
-					}));
-				}
-			}
-		});
-	}
+                            $viewers = $this->world->getViewersForPosition($nextVector);
+                            $this->world->addSound($nextVector, new BlockBreakSound(VanillaBlocks::COCOA_POD()), $viewers);
+                        }
+
+                        $resolve(true);
+                        $nextNumber++;
+                    }));
+                }
+            }
+        });
+    }
 
 }

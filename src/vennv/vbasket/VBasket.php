@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace vennv\vbasket;
 
@@ -41,130 +41,102 @@ use vennv\vbasket\utils\ItemUtil;
 use vennv\vbasket\utils\Seeds;
 use vennv\vbasket\utils\TypeVBasket;
 
-final class VBasket extends PluginBase implements Listener
-{
+final class VBasket extends PluginBase implements Listener {
 
-	private static VBasket $instance;
+    private static VBasket $instance;
 
-	public static function getInstance(): VBasket
-	{
-		return self::$instance;
-	}
+    public static function getInstance() : VBasket {
+        return self::$instance;
+    }
 
-	public function onLoad(): void
-	{
-		self::$instance = $this;
-	}
+    public function onLoad() : void {
+        self::$instance = $this;
+    }
 
-	public function onEnable(): void
-	{
-		VapmPMMP::init($this);
+    public function onEnable() : void {
+        VapmPMMP::init($this);
 
-		if (!InvMenuHandler::isRegistered())
-		{
-			InvMenuHandler::register($this);
-		}
+        if (!InvMenuHandler::isRegistered()) {
+            InvMenuHandler::register($this);
+        }
 
-		Seeds::$seeds_item = [
-			WheatSeeds::class,
-			Carrot::class,
-			Potato::class,
-			PumpkinSeeds::class,
-			MelonSeeds::class,
-			BeetrootSeeds::class
-		];
+        Seeds::$seeds_item = [
+            WheatSeeds::class,
+            Carrot::class,
+            Potato::class,
+            PumpkinSeeds::class,
+            MelonSeeds::class,
+            BeetrootSeeds::class
+        ];
 
-		$this->getLogger()->info("Has been loaded " . count(Seeds::$seeds_item) . " seeds.");
+        $this->getLogger()->info("Has been loaded " . count(Seeds::$seeds_item) . " seeds.");
 
-		Seeds::$nether_wart_item = [
-			ItemUtil::getItem("nether_wart")
-		];
+        Seeds::$nether_wart_item = [
+            ItemUtil::getItem("nether_wart")
+        ];
 
-		$this->getLogger()->info("Has been loaded " . count(Seeds::$nether_wart_item) . " nether wart.");
+        $this->getLogger()->info("Has been loaded " . count(Seeds::$nether_wart_item) . " nether wart.");
 
-		Seeds::$blockSeeds = [
-			WheatSeeds::class => VanillaBlocks::WHEAT(),
-			Carrot::class => VanillaBlocks::CARROTS(),
-			Potato::class => VanillaBlocks::POTATOES(),
-			PumpkinSeeds::class => VanillaBlocks::PUMPKIN_STEM(),
-			MelonSeeds::class => VanillaBlocks::MELON_STEM(),
-			BeetrootSeeds::class => VanillaBlocks::BEETROOTS(),
-			ItemUtil::getItem("nether_wart")::class => VanillaBlocks::NETHER_WART()
-		];
+        Seeds::$blockSeeds = [
+            WheatSeeds::class => VanillaBlocks::WHEAT(),
+            Carrot::class => VanillaBlocks::CARROTS(),
+            Potato::class => VanillaBlocks::POTATOES(),
+            PumpkinSeeds::class => VanillaBlocks::PUMPKIN_STEM(),
+            MelonSeeds::class => VanillaBlocks::MELON_STEM(),
+            BeetrootSeeds::class => VanillaBlocks::BEETROOTS(),
+            ItemUtil::getItem("nether_wart")::class => VanillaBlocks::NETHER_WART()
+        ];
 
-		$this->getLogger()->info("Has been loaded " . count(Seeds::$blockSeeds) . " block seeds.");
+        $this->getLogger()->info("Has been loaded " . count(Seeds::$blockSeeds) . " block seeds.");
 
-		$this->saveDefaultConfig();
-		$this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
-	}
+        $this->saveDefaultConfig();
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+    }
 
-	public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
-	{
-		if ($command->getName() == "vbasket")
-		{
-			if (isset($args[0]))
-			{
-				if ($args[0] == "give")
-				{
-					if (!isset($args[1]))
-					{
-						return false;
-					}
-					else
-					{
-						if (!isset($args[2]) || !isset($args[3]))
-						{
-							return false;
-						}
-						else
-						{
-							if (!is_numeric($args[3]))
-							{
-								$sender->sendMessage("Amount must be a number");
-								return true;
-							}
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
+        if ($command->getName() == "vbasket") {
+            if (isset($args[0])) {
+                if ($args[0] == "give") {
+                    if (!isset($args[1])) {
+                        return false;
+                    } else {
+                        if (!isset($args[2]) || !isset($args[3])) {
+                            return false;
+                        } else {
+                            if (!is_numeric($args[3])) {
+                                $sender->sendMessage("Amount must be a number");
+                                return true;
+                            }
 
-							$player = $sender->getServer()->getPlayerExact($args[1]);
-							if ($player == null)
-							{
-								$sender->sendMessage("Player not found");
-								return true;
-							}
-							else
-							{
-								$type = $args[2];
+                            $player = $sender->getServer()->getPlayerExact($args[1]);
+                            if ($player == null) {
+                                $sender->sendMessage("Player not found");
+                                return true;
+                            } else {
+                                $type = $args[2];
 
-								if ($type == "seeds")
-								{
-									$type = TypeVBasket::SEEDS;
-								}
-								else if ($type == "nether_wart")
-								{
-									$type = TypeVBasket::NETHER_WART;
-								}
-								else
-								{
-									$sender->sendMessage("Types: seeds, nether_wart");
-									return false;
-								}
+                                if ($type == "seeds") {
+                                    $type = TypeVBasket::SEEDS;
+                                } else if ($type == "nether_wart") {
+                                    $type = TypeVBasket::NETHER_WART;
+                                } else {
+                                    $sender->sendMessage("Types: seeds, nether_wart");
+                                    return false;
+                                }
 
-								DataManager::giveVBasket($player, $type, (int) $args[3]);
-							}
-						}
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
+                                DataManager::giveVBasket($player, $type, (int)$args[3]);
+                            }
+                        }
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }
