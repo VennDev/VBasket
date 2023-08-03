@@ -69,13 +69,9 @@ final class VBasket extends PluginBase implements Listener {
             BeetrootSeeds::class
         ];
 
-        $this->getLogger()->info("Has been loaded " . count(Seeds::$seeds_item) . " seeds.");
-
         Seeds::$nether_wart_item = [
             ItemUtil::getItem("nether_wart")
         ];
-
-        $this->getLogger()->info("Has been loaded " . count(Seeds::$nether_wart_item) . " nether wart.");
 
         Seeds::$blockSeeds = [
             WheatSeeds::class => VanillaBlocks::WHEAT(),
@@ -86,8 +82,6 @@ final class VBasket extends PluginBase implements Listener {
             BeetrootSeeds::class => VanillaBlocks::BEETROOTS(),
             ItemUtil::getItem("nether_wart")::class => VanillaBlocks::NETHER_WART()
         ];
-
-        $this->getLogger()->info("Has been loaded " . count(Seeds::$blockSeeds) . " block seeds.");
 
         $this->saveDefaultConfig();
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
