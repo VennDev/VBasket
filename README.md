@@ -14,7 +14,7 @@
 ```
 
 # Video
-[click to watch](https://github.com/VennDev/VBasket/assets/111500380/698b8532-b766-4f4e-be24-c64f08b4d36c)
+[Click To Watch](https://github.com/VennDev/VBasket/assets/111500380/698b8532-b766-4f4e-be24-c64f08b4d36c)
 
 # Credits
 - Email: pnam5005@gmail.com
