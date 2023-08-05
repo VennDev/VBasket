@@ -18,4 +18,4 @@
 - Paypal: lifeboat909@gmail.com
 
 # Video
-<iframe width="420" height="315" src="https://github.com/VennDev/VBasket/assets/111500380/698b8532-b766-4f4e-be24-c64f08b4d36c"> </iframe>
+(click to watch)[https://github.com/VennDev/VBasket/assets/111500380/698b8532-b766-4f4e-be24-c64f08b4d36c]
