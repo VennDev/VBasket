@@ -9,4 +9,7 @@ projects:
       - src: VennDev/LibVapmPMMP/LibVapmPMMP
         version: ^1.8
         branch: "main"
+      - src: muqsit/InvMenu/InvMenu
+        version: ^4.6
+        branch: "4.0"
 ...
